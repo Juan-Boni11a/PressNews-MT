@@ -36,7 +36,7 @@ add_action('admin_init', 'crear_tabla_personalizada');
 function agregar_pagina_admin_personalizada()
 {
     add_menu_page(
-        'Cargar Datos',
+        'PRESSNEWS',
         'Cargar Datos',
         'manage_options',
         'cargar-datos',

@@ -8,12 +8,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
+        body {
+            overflow: hidden !important;
+        }
+
         .news-header {
             display: flex;
             justify-content: left;
             background-color: #00243e;
             padding: 1em;
             padding-left: 5%;
+            height: 90px;
         }
 
         .hamburger {
@@ -196,22 +201,24 @@
 
         .news-menu-container {
             width: 25%;
-            padding-top: 5%;
-            padding-left: 5%;
-            padding-right: 3em;
+            padding-left: 1%;
+            padding-right: 4em;
         }
 
         .cards-list {
             width: 75%;
-            padding-left: 2em;
-            padding-right: 5%;
-            padding-bottom: 2em;
+            padding-left: 1em;
+            padding-right: 1%;
+            padding-bottom: 4em;
             display: flex;
             flex-wrap: wrap;
             gap: 1em;
-            height: 80vh;
-            overflow: scroll;
+            height: calc(100vh - 90px);
+            overflow-y: scroll;
+            /* Permite el scroll solo en la dirección vertical */
+            overflow-x: hidden;
             margin: 0;
+
         }
 
         .cards-list h1 {
@@ -219,7 +226,7 @@
         }
 
         .card {
-            width: 32%;
+            width: 30%;
             border-radius: 20px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             padding-top: 0;
@@ -241,9 +248,10 @@
             background-color: #00243e;
             color: white;
             margin: 1em;
-            padding: 10px 20px 10px 20px;
+            padding: 5px 10px 5px 10px;
             border-radius: 35px;
             z-index: 1;
+            font-size: 0.8em;
         }
 
         .card_news_tag p {
@@ -289,16 +297,28 @@
             background-color: rgba(0, 0, 0, 0.5);
         }
 
+        #modal-title {
+            text-align: center !important;
+        }
+
         .modal-content {
             background-color: white;
             margin: 15% auto;
             padding: 20px;
             width: 80%;
             max-width: 600px;
-            height: 60vh;
+            height: auto;
             border-radius: 15px;
             position: relative;
-            overflow: scroll;
+            overflow-y: scroll;
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-content .card_news_url {
+            margin-top: 5px;
+            padding: 5px 7px !important;
         }
 
         .close-btn {
@@ -310,31 +330,53 @@
         }
 
         .read-more-btn {
-            background-color: transparent !important;
-            border: none !important;
-            font-style: italic !important;
-            color: #00243e !important;
-            text-decoration: underline !important;
+            font-size: 0.8em !important;
+            border-radius: 5px !important;
+            padding: 2px 7px !important;
+            background-color: #00243e !important;
+            border: 1px solid lightgray !important;
+            color: white !important;
             text-transform: none !important;
-            padding: 0 !important;
-            font-size: 0.7em !important;
+            text-transform: uppercase !important;
+        }
+
+        .read-more-btn:hover{
+            background-color: #24BAE5 !important;
+            color: #00243e !important;
         }
 
         .card_news_url {
-            font-style: italic;
-            color: #00243e;
-            text-decoration: underline !important;
+            font-size: 0.8em !important;
+            border-radius: 5px;
+            padding: 2px 7px !important;
+            background-color: #FFCE0A;
+            color: #00243e !important;
+            text-transform: uppercase;
+        }
+
+        .card_news_url:hover{
+            background-color: #24BAE5;
         }
 
         .card_news_product {
-            background-color: lightgray;
+            background-color: #e6f3e6;
             border-radius: 15px;
             padding: 2px 7px;
             text-align: center;
+            border: 1px solid green;
+            color: green;
+            font-weight: bold;
+            margin-top: 0 !important;
         }
 
         .card_news_date {
             color: gray;
+        }
+
+        .media_date {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
 
@@ -404,7 +446,7 @@
                 padding-right: 1em;
                 padding-left: 1em;
                 overflow: auto;
-                padding-bottom: 1em;
+                padding-bottom: 5em;
                 width: 100%;
             }
 
@@ -420,6 +462,24 @@
             .hamburger {
                 display: block;
             }
+
+            .news-card-last {
+                align-items: normal;
+                flex-direction: column;
+            }
+
+            .card_news_url,
+            .read-more-btn {
+                margin-top: 5px !important;
+                text-align: center;
+            }
+
+            .media_date {
+                align-items: normal;
+                flex-direction: column;
+            }
+
+
         }
     </style>
 
@@ -432,10 +492,10 @@
     function crearCard($medio_nombre, $titulo, $fecha, $anio, $tag, $imagen, $contenido, $url, $pais_medio, $pais_producto, $producto, $id)
     {
         // Limitar el contenido y titulo
-        $contenido_truncado = (strlen($contenido) > 100) ? substr($contenido, 0, 100) . '...' : $contenido;
-        $titulo_truncado = (strlen($titulo) > 100) ? substr($titulo, 0, 35) . '...' : $titulo;
+        $contenido_truncado = (strlen($contenido) > 100) ? substr($contenido, 0, 110) . '...' : $contenido;
+        $titulo_truncado = (strlen($titulo) > 100) ? substr($titulo, 0, 20) . '...' : $titulo;
 
-        echo '<div class="card" data-card-id="' . $id . '" data-full-content="' . htmlspecialchars($contenido) . '">';
+        echo '<div class="card" data-card-id="' . $id . '" data-full-content="' . htmlspecialchars($contenido) . '" data-full-title="' . htmlspecialchars($titulo) . '">';
 
         echo '<div class="image-container" style="background-image: url(\'' . $imagen . '\');">';
         echo '<div class="card_news_tag"><p>' . $tag . '</p></div>';
@@ -443,16 +503,17 @@
 
         echo '<div class="news-main-info">'; // Segunda fila
         echo '<h3 class="card_news_title">' . $titulo_truncado . '</h3> ';
-        echo '<p class="card_news_medio">' . $medio_nombre . ' - ' . $pais_medio . '</p>';
+        echo '<div class="media_date">';
+        echo '<p class="card_news_medio"><i class="fa-solid fa-map-marker-alt" style=" margin-right: 5px;"></i>' . $medio_nombre . ' - ' . $pais_medio . '</p>';
         echo '<p class="card_news_date"><i class="fa-regular fa-calendar" style=" margin-right: 5px;"></i>' . $fecha . '</p>';
+        echo '</div>';
         echo '<p class="card_news_content">' . $contenido_truncado . '</p>';
-        echo '<button class="read-more-btn" data-card-id="' . $id . '">View more</button>';
-
         echo '</div>';
 
         echo '<div class="news-card-last">'; // Tercera fila
-        echo '<a class="card_news_url" href="' . $url . '" target="_blank">Go to site</a>';
         echo '<p class="card_news_product">' . $producto . ' - ' . $pais_producto . '</p>';
+        echo '<button class="read-more-btn" data-card-id="' . $id . '"><i class="fa-regular fa-eye" style=" margin-right: 5px;"></i>View more</button>';
+        echo '<a class="card_news_url" href="' . $url . '" target="_blank"><i class="fa-regular fa-share-square" style=" margin-right: 5px;"></i>Go to site</a>';
         echo '</div>';
 
         echo '</div>';
@@ -522,7 +583,7 @@
             <p id="modal-content"></p>
             <p class="card_news_date" id="modal-date"></p>
             <p class="card_news_product" id="modal-product"></p>
-            <a class="card_news_url" id="modal-url" href="#" target="_blank">Go to site</a>
+            <a class="card_news_url" id="modal-url" href="#" target="_blank"><i class="fa-regular fa-share-square" style=" margin-right: 5px;"></i>Go to site</a>
         </div>
     </div>
 
@@ -654,6 +715,27 @@
             }
         });
 
+        // Cambiar display a 'block' cuando la pantalla sea mayor a 768px
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                newsMenuContainer.style.display = 'block'; // Mostrar menú en pantallas grandes
+                hamburgerIcon.innerHTML = '&#9776;'; // Restaurar ícono hamburguesa
+                hamburgerIcon.classList.remove('open');
+            } else if (!hamburgerIcon.classList.contains('open')) {
+                // Si no está abierto, ocultar el menú en pantallas pequeñas
+                newsMenuContainer.style.display = 'none';
+            }
+        });
+
+        // Inicializar estado al cargar la página
+        window.addEventListener('DOMContentLoaded', function() {
+            if (window.innerWidth > 768) {
+                newsMenuContainer.style.display = 'block';
+            } else {
+                newsMenuContainer.style.display = 'none';
+            }
+        });
+
 
         // DROPDOWNS MENU
         document.addEventListener('DOMContentLoaded', function() {
@@ -704,7 +786,7 @@
                 var cardId = $(this).data('card-id');
                 var cardElement = $('.card[data-card-id="' + cardId + '"]');
 
-                var titulo = cardElement.find('.card_news_title').text();
+                var titulo = cardElement.data('full-title');
                 var contenidoCompleto = cardElement.data('full-content');
                 var fecha = cardElement.find('.card_news_date').text();
                 var producto = cardElement.find('.card_news_product').text();

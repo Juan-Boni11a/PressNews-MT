@@ -1,0 +1,113 @@
+<style>
+    .wFormContainer .wForm {
+      background-color: #fff0 !important; /* Merged with .wFormWebPage */
+      padding: 1em !important; /* Simplified padding declaration */
+  }
+  
+  .wFormHeader, .wFormFooter, .supportInfo {
+      display: none; /* Combined selectors for elements that are hidden */
+  }
+  
+  
+  
+  
+  
+    </style>
+  
+  
+  
+  
+  
+  
+  
+  
+    <noscript>
+  <style type="text/css"> #submit_button {display:none; } </style>
+  
+  </noscript>
+  
+  
+  
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+      var fechaActual = new Date();
+      var dia = fechaActual.getDate().toString().padStart(2, '0');
+      var mes = (fechaActual.getMonth() + 1).toString().padStart(2, '0'); // Enero es 0
+      var ano = fechaActual.getFullYear();
+      var fechaMinima = `${ano}-${mes}-${dia}`;
+  
+      var checkInDate = document.getElementById('tfa_528');
+      var checkOutDate = document.getElementById('tfa_538');
+  
+      if (checkInDate && checkOutDate) {
+          checkInDate.type = 'date';
+          checkOutDate.type = 'date';
+  
+          // Establecer la fecha mínima para hoy, evitando seleccionar fechas pasadas
+          checkInDate.setAttribute('min', fechaMinima);
+          checkOutDate.setAttribute('min', fechaMinima);
+      }
+  });
+  
+  
+  </script>
+  
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+      //const requiredFields = document.querySelectorAll('.required');
+    const requiredFields = [...document.querySelectorAll('.required'), document.getElementById('tfa_516')];
+   
+      requiredFields.forEach(field => {
+          field.setAttribute('required', 'required');
+          if (field.id === 'tfa_392') { // Asumiendo que 'tfa_392' es el ID del campo de email
+              field.setAttribute('type', 'email');
+          }
+      });
+   
+      function validateForm(event) {
+          let isValid = true;
+          const submitButton = document.getElementById('submit_button');
+   
+          requiredFields.forEach(field => {
+              if (field.type === 'checkbox' && !field.checked) {
+                  isValid = false;
+                  field.classList.add('error');
+                  field.setCustomValidity('You must accept the terms and conditions');
+              } else if (field.type === 'email' && !field.checkValidity()) {
+                  isValid = false;
+                  field.classList.add('error');
+                  field.setCustomValidity('Please enter a valid email address');
+              } else if (field.type === 'tel' && !/^\+?\d{10,15}$/.test(field.value)) {
+                  isValid = false;
+                  field.classList.add('error');
+                  field.setCustomValidity('Please enter a valid phone number');
+              } else if (field.type === 'text' && field.value.trim() === '') {
+                  isValid = false;
+                  field.classList.add('error');
+                  field.setCustomValidity('This field is required');
+              } else if (field.tagName === 'SELECT' && field.value === '') {
+                  isValid = false;
+                  field.classList.add('error');
+                  field.setCustomValidity('Please select an option');
+              } else {
+                  field.classList.remove('error');
+                  field.setCustomValidity('');
+              }
+          });
+   
+          if (isValid) {
+              submitButton.disabled = true;
+          } else {
+              event.preventDefault();
+              alert('Please complete all required fields correctly.');
+          }
+      }
+   
+      const form = document.getElementById('form_id'); 
+      if (form) {
+          form.addEventListener('submit', validateForm);
+      }
+  });
+   
+   
+    </script>
